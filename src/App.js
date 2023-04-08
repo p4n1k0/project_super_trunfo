@@ -9,9 +9,9 @@ class App extends React.Component {
     this.state = {
       cardName: '',
       cardDescription: '',
-      cardAttr1: '',
-      cardAttr2: '',
-      cardAttr3: '',
+      cardAttr1: '0',
+      cardAttr2: '0',
+      cardAttr3: '0',
       cardImage: '',
       cardTrunfo: false,
       button: true,
@@ -28,17 +28,21 @@ class App extends React.Component {
     const value = target.type === 'checkbox' ? target.checked : target.value;
 
     this.setState({ [name]: value }, () => {
-      const { cardName, cardDescription, cardImage, cardAttr1,
-        cardAttr2, cardAttr3, cardRare } = this.state;
-
-      const maxAttrNumber = 90;
-      const maxNumber = 210;
+      const {
+        cardName,
+        cardDescription,
+        cardImage,
+        cardAttr1,
+        cardAttr2,
+        cardAttr3,
+        cardRare
+      } = this.state;
 
       const cases = [
-        Number(cardAttr1) >= 0 && Number(cardAttr1) <= maxAttrNumber,
-        Number(cardAttr2) >= 0 && Number(cardAttr2) <= maxAttrNumber,
-        Number(cardAttr3) >= 0 && Number(cardAttr3) <= maxAttrNumber,
-        (Number(cardAttr1) + Number(cardAttr2) + Number(cardAttr3) <= maxNumber),
+        Number(cardAttr1) >= 0 && Number(cardAttr1) <= 90,
+        Number(cardAttr2) >= 0 && Number(cardAttr2) <= 90,
+        Number(cardAttr3) >= 0 && Number(cardAttr3) <= 90,
+        (Number(cardAttr1) + Number(cardAttr2) + Number(cardAttr3) <= 210),
         cardName !== '',
         cardDescription !== '',
         cardImage !== '',
@@ -54,9 +58,15 @@ class App extends React.Component {
   }
 
   handleSave(event) {
-    const { cardName, cardDescription, cardAttr1, cardAttr2,
-      cardAttr3, cardImage, cardRare } = this.state;
-
+    const {
+      cardName,
+      cardDescription,
+      cardAttr1,
+      cardAttr2,
+      cardAttr3,
+      cardImage,
+      cardRare 
+    } = this.state;
     this.setState((previous) => ({
       newCard: [...previous.newCard, {
         cardName,
@@ -72,9 +82,9 @@ class App extends React.Component {
       this.setState({
         cardName: '',
         cardDescription: '',
-        cardAttr1: 0,
-        cardAttr2: 0,
-        cardAttr3: 0,
+        cardAttr1: '0',
+        cardAttr2: '0',
+        cardAttr3: '0',
         cardTrunfo: false,
         cardImage: '',
         cardRare: false,
@@ -91,7 +101,11 @@ class App extends React.Component {
   }
 
   render() {
-    const { cardName, cardDescription, cardImage, cardAttr1, cardAttr2,
+    const {
+      cardName,
+      cardDescription,
+      cardImage,
+      cardAttr1, cardAttr2,
       cardAttr3, cardTrunfo, cardRare, button, newCard, hasTrunfo } = this.state;
 
 
