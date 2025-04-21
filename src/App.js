@@ -9,10 +9,11 @@ class App extends React.Component {
     this.state = {
       cardName: '',
       cardDescription: '',
-      cardAttr1: '',
-      cardAttr2: '',
-      cardAttr3: '',
       cardImage: '',
+      cardAttr1: '0',
+      cardAttr2: '0',
+      cardAttr3: '0',
+      cardRare: 'normal',
       cardTrunfo: false,
       button: true,
       hasTrunfo: false,
@@ -21,6 +22,11 @@ class App extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSave = this.handleSave.bind(this);
     this.handleHasTrunfo = this.handleHasTrunfo.bind(this);
+    this.deleteCard = this.deleteCard.bind(this);
+  }
+
+  componentDidMount() {
+    this.handleHasTrunfo();
   }
 
   handleChange = ({ target }) => {
@@ -29,7 +35,7 @@ class App extends React.Component {
 
     this.setState({ [name]: value }, () => {
       const { cardName, cardDescription, cardImage, cardAttr1,
-        cardAttr2, cardAttr3, cardRare } = this.state;
+        cardAttr2, cardAttr3 } = this.state;
 
       const maxAttrNumber = 90;
       const maxNumber = 210;
@@ -45,7 +51,6 @@ class App extends React.Component {
         cardAttr1 !== '',
         cardAttr2 !== '',
         cardAttr3 !== '',
-        cardRare !== false,
       ];
 
       const verifyStatus = cases.every((status) => status === true);
@@ -55,7 +60,7 @@ class App extends React.Component {
 
   handleSave(event) {
     const { cardName, cardDescription, cardAttr1, cardAttr2,
-      cardAttr3, cardImage, cardRare } = this.state;
+      cardAttr3, cardImage, cardRare, cardTrunfo } = this.state;
 
     this.setState((previous) => ({
       newCard: [...previous.newCard, {
@@ -65,19 +70,20 @@ class App extends React.Component {
         cardAttr2,
         cardAttr3,
         cardImage,
-        cardRare
+        cardRare,
+        cardTrunfo,
       }],
     }), () => {
       this.handleHasTrunfo();
       this.setState({
         cardName: '',
         cardDescription: '',
-        cardAttr1: 0,
-        cardAttr2: 0,
-        cardAttr3: 0,
-        cardTrunfo: false,
+        cardAttr1: '0',
+        cardAttr2: '0',
+        cardAttr3: '0',
         cardImage: '',
-        cardRare: false,
+        cardRare: 'normal',
+        cardTrunfo,
       });
     });
     event.preventDefault();
@@ -87,6 +93,17 @@ class App extends React.Component {
     const { cardTrunfo } = this.state;
     if (cardTrunfo) {
       this.setState({ hasTrunfo: true });
+    }
+  }
+
+  deleteCard({ target }) {
+    const { newCard } = this.state;
+    const deleted = newCard.filter((card) => card.cardName !== target.id);
+    const filtered = newCard.filter((card) => card.cardName === target.id);
+    this.setState({ newCard: deleted });
+
+    if (filtered[0].cardTrunfo === true) {
+      this.setState({ hasTrunfo: false });
     }
   }
 
@@ -106,8 +123,8 @@ class App extends React.Component {
           cardAttr2={cardAttr2}
           cardAttr3={cardAttr3}
           cardRare={cardRare}
-          cardTrunfo={cardTrunfo}
           hasTrunfo={hasTrunfo}
+          cardTrunfo={cardTrunfo}
           onInputChange={this.handleChange}
           onSaveButtonClick={this.handleSave}
         />
@@ -120,21 +137,30 @@ class App extends React.Component {
           cardAttr3={cardAttr3}
           cardRare={cardRare}
           cardTrunfo={cardTrunfo}
-          onInputChange={this.handleChange}
         />
         <section>
-          {newCard.map((card) => (
-            <Card
-              key={card.cardName}
-              cardName={card.cardName}
-              cardDescription={card.cardDescription}
-              cardAttr1={card.cardAttr1}
-              cardAttr2={card.cardAttr2}
-              cardAttr3={card.cardAttr3}
-              cardImage={card.cardImage}
-              cardRare={card.cardRare}
-              cardTrunfo={card.cardTrunfo}
-            />))}
+          {newCard.map((card, index) => (
+            <div key={ `${card.cardName}${index}` }>
+              <Card
+                cardName={card.cardName}
+                cardDescription={card.cardDescription}
+                cardAttr1={card.cardAttr1}
+                cardAttr2={card.cardAttr2}
+                cardAttr3={card.cardAttr3}
+                cardImage={card.cardImage}
+                cardRare={card.cardRare}
+                cardTrunfo={card.cardTrunfo}
+              />
+              <button
+                id={card.cardName}
+                type="button"
+                data-testid="delete-button"
+                onClick={this.deleteCard}
+              >
+                Excluir
+              </button>
+            </div>
+          ))}
         </section>
       </main>
     );

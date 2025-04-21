@@ -16,6 +16,26 @@ class Form extends Component {
             isSaveButtonDisabled,
             onInputChange,
             onSaveButtonClick } = this.props;
+
+        function TrunfoValidation() {
+            if (hasTrunfo) {
+                return <p>Você já tem um Super Trunfo em seu baralho</p>;
+            }
+            return (
+                <div>
+                    <label htmlFor="trunfo-input">
+                        Super Trybe Trunfo
+                        <input
+                            name="cardTrunfo"
+                            data-testid="trunfo-input"
+                            type="checkbox"
+                            onChange={onInputChange}
+                            checked={cardTrunfo}
+                        />
+                    </label>
+                </div>
+            );
+        }
         return (
             <div>
                 <form>
@@ -28,15 +48,18 @@ class Form extends Component {
                             onChange={onInputChange}
                         />
                     </label>
-                    <label htmlFor="description">
-                        <textarea
-                            name="cardDescription"
-                            type="textarea"
-                            value={cardDescription}
-                            onChange={onInputChange}
-                            data-testid="description-input"
-                        />
-                    </label>
+                    <div>
+                        <label htmlFor="description">
+                            Descrição
+                            <textarea
+                                name="cardDescription"
+                                value={cardDescription}
+                                onChange={onInputChange}
+                                data-testid="description-input"
+                                placeholder="Descrição da carta"
+                            />
+                        </label>
+                    </div>
                     <input
                         name="cardAttr1"
                         type="number"
@@ -82,19 +105,9 @@ class Form extends Component {
                             <option value="muito raro">muito raro</option>
                         </select>
                     </label>
-                    <label htmlFor="trunfo">
-                        Super Trybe Trunfo
-                        {!hasTrunfo && <input
-                            name="cardTrunfo"
-                            type="checkbox"
-                            checked={cardTrunfo}
-                            onChange={onInputChange}
-                            data-testid="trunfo-input"
-                        />}
-                        {hasTrunfo && <p> Você já tem um Super Trunfo em seu baralho</p>}
-                    </label>
+                    {TrunfoValidation()}
                     <button
-                        type="submit"
+                        type="button"
                         data-testid="save-button"
                         disabled={isSaveButtonDisabled}
                         onClick={onSaveButtonClick}
@@ -110,9 +123,9 @@ class Form extends Component {
 Form.propTypes = {
     cardName: PropTypes.string.isRequired,
     cardDescription: PropTypes.string.isRequired,
-    cardAttr1: PropTypes.number.isRequired,
-    cardAttr2: PropTypes.number.isRequired,
-    cardAttr3: PropTypes.number.isRequired,
+    cardAttr1: PropTypes.string.isRequired,
+    cardAttr2: PropTypes.string.isRequired,
+    cardAttr3: PropTypes.string.isRequired,
     cardImage: PropTypes.string.isRequired,
     cardRare: PropTypes.string.isRequired,
     cardTrunfo: PropTypes.bool.isRequired,
