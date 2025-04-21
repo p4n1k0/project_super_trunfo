@@ -15,7 +15,8 @@ class Form extends Component {
             hasTrunfo,
             isSaveButtonDisabled,
             onInputChange,
-            onSaveButtonClick } = this.props;
+            onSaveButtonClick,
+        } = this.props;
 
         function TrunfoValidation() {
             if (hasTrunfo) {
@@ -92,6 +93,14 @@ class Form extends Component {
                             value={cardImage}
                             onChange={onInputChange}
                             data-testid="image-input"
+                        />
+                    </label>
+                    <label htmlFor="filter">
+                        <input
+                            type="text"
+                            name="filter"
+                            onChange={onInputChange}
+                            data-testid="name-filter"
                         />
                     </label>
                     <label htmlFor="rarity">

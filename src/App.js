@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { Component } from 'react';
 import Form from './components/Form';
 import Card from './components/Card';
 
-class App extends React.Component {
+class App extends Component {
   constructor() {
     super();
 
@@ -18,6 +18,7 @@ class App extends React.Component {
       button: true,
       hasTrunfo: false,
       newCard: [],
+      filter: '',
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSave = this.handleSave.bind(this);
@@ -108,8 +109,26 @@ class App extends React.Component {
   }
 
   render() {
-    const { cardName, cardDescription, cardImage, cardAttr1, cardAttr2,
-      cardAttr3, cardTrunfo, cardRare, button, newCard, hasTrunfo } = this.state;
+    const {
+      cardName,
+      cardDescription,
+      cardImage,
+      cardAttr1,
+      cardAttr2,
+      cardAttr3,
+      cardTrunfo,
+      cardRare,
+      button,
+      newCard,
+      hasTrunfo,
+      filter,
+    } = this.state;
+
+  const filterDeck = newCard.filter((card) => {
+    const nameCard = card.cardName.toLocaleLowerCase();
+    const filterName = filter.toLocaleLowerCase();
+    return nameCard.includes(filterName);
+  })
 
 
     return (
@@ -139,7 +158,7 @@ class App extends React.Component {
           cardTrunfo={cardTrunfo}
         />
         <section>
-          {newCard.map((card, index) => (
+          {filterDeck.map((card, index) => (
             <div key={ `${card.cardName}${index}` }>
               <Card
                 cardName={card.cardName}
