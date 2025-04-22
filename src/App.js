@@ -2,44 +2,51 @@ import React, { Component } from 'react';
 import Form from './components/Form';
 import Card from './components/Card';
 
+const INITIAL = {
+  cardName: '',
+  cardDescription: '',
+  cardImage: '',
+  cardAttr1: '0',
+  cardAttr2: '0',
+  cardAttr3: '0',
+  cardRare: 'normal',
+  cardTrunfo: false,
+  isSaveButtonDisabled: true,
+  hasTrunfo: false,
+  newCard: [],
+};
+
+const maxAttrNumber = 90;
+const maxNumber = 210;
+let filter = false;
+
 class App extends Component {
   constructor() {
     super();
 
-    this.state = {
-      cardName: '',
-      cardDescription: '',
-      cardImage: '',
-      cardAttr1: '0',
-      cardAttr2: '0',
-      cardAttr3: '0',
-      cardRare: 'normal',
-      cardTrunfo: false,
-      button: true,
-      hasTrunfo: false,
-      newCard: [],
-      filter: '',
-    };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSave = this.handleSave.bind(this);
-    this.handleHasTrunfo = this.handleHasTrunfo.bind(this);
+    this.state = INITIAL;
+    this.onInputChange = this.onInputChange.bind(this);
+    this.onSaveButtonClick = this.onSaveButtonClick.bind(this);
     this.deleteCard = this.deleteCard.bind(this);
+    this.filterName = this.filterName.bind(this);
+    this.filterRare = this.filterRare.bind(this);
   }
 
-  componentDidMount() {
-    this.handleHasTrunfo();
-  }
 
-  handleChange = ({ target }) => {
+  onInputChange = ({ target }) => {
     const { name } = target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
 
     this.setState({ [name]: value }, () => {
       const { cardName, cardDescription, cardImage, cardAttr1,
-        cardAttr2, cardAttr3 } = this.state;
+        cardAttr2, cardAttr3, cardRare, newCard } = this.state;
 
-      const maxAttrNumber = 90;
-      const maxNumber = 210;
+      const verifyTrunfo = newCard.some(({cardTrunfo}) => cardTrunfo === true);
+      if (verifyTrunfo || target.checked) {
+        this.setState({ hasTrunfo: true });
+      } else {
+        this.setState({ hasTrunfo: false });
+      }
 
       const cases = [
         Number(cardAttr1) >= 0 && Number(cardAttr1) <= maxAttrNumber,
@@ -49,64 +56,69 @@ class App extends Component {
         cardName !== '',
         cardDescription !== '',
         cardImage !== '',
-        cardAttr1 !== '',
-        cardAttr2 !== '',
-        cardAttr3 !== '',
+        cardRare !== '',
       ];
 
       const verifyStatus = cases.every((status) => status === true);
-      this.setState({ button: !verifyStatus });
+      if (verifyStatus) {
+        this.setState({ isSaveButtonDisabled: false });
+      } else {
+        this.setState({ isSaveButtonDisabled: true });
+      }
     });
   }
 
-  handleSave(event) {
-    const { cardName, cardDescription, cardAttr1, cardAttr2,
-      cardAttr3, cardImage, cardRare, cardTrunfo } = this.state;
-
-    this.setState((previous) => ({
-      newCard: [...previous.newCard, {
-        cardName,
-        cardDescription,
-        cardAttr1,
-        cardAttr2,
-        cardAttr3,
-        cardImage,
-        cardRare,
-        cardTrunfo,
-      }],
-    }), () => {
-      this.handleHasTrunfo();
-      this.setState({
-        cardName: '',
-        cardDescription: '',
-        cardAttr1: '0',
-        cardAttr2: '0',
-        cardAttr3: '0',
-        cardImage: '',
-        cardRare: 'normal',
-        cardTrunfo,
-      });
+  onSaveButtonClick() {
+    const { cardName, cardDescription, cardAttr1, cardAttr2, cardAttr3,
+      cardImage, cardRare, cardTrunfo, newCard } = this.state;
+    const savedCard = {
+      cardName,
+      cardDescription,
+      cardAttr1,
+      cardAttr2,
+      cardAttr3,
+      cardImage,
+      cardRare,
+      cardTrunfo,
+      newCard,
+    };
+    this.setState({
+      cardName: '',
+      cardDescription: '',
+      cardAttr1: '0',
+      cardAttr2: '0',
+      cardAttr3: '0',
+      cardImage: '',
+      cardRare: 'normal',
+      isSaveButtonDisabled: true,
+      cardTrunfo: false,
     });
-    event.preventDefault();
-  }
-
-  handleHasTrunfo = () => {
-    const { cardTrunfo } = this.state;
-    if (cardTrunfo) {
-      this.setState({ hasTrunfo: true });
-    }
+    this.setState(({ newCard }) => (
+      {
+        newCard: [...newCard, savedCard],
+      }));
   }
 
   deleteCard({ target }) {
     const { newCard } = this.state;
-    const deleted = newCard.filter((card) => card.cardName !== target.id);
-    const filtered = newCard.filter((card) => card.cardName === target.id);
-    this.setState({ newCard: deleted });
+    const removeCard = newCard.filter(({ cardName }) => cardName !== target.value);
+    this.setState(({ newCard: removeCard, hasTrunfo: false }));
+  }
 
-    if (filtered[0].cardTrunfo === true) {
-      this.setState({ hasTrunfo: false });
+  filterName({ target }) {
+    const { newCard } = this.state;
+    const getName = newCard.filter(({ cardName }) => cardName.includes(target.value));
+    this.setState({ newCard: getName, hasTrunfo: false });
+  }
+
+  filterRare({ target }) {
+    if (target.value !== 'todas') {
+      const { newCard } = this.state;
+      const getRare = newCard.filter(({ cardRare }) => cardRare === target.value);
+      this.setState({ newCard: getRare, hasTrunfo: false });
     }
   }
+
 
   render() {
     const {
@@ -118,23 +130,15 @@ class App extends Component {
       cardAttr3,
       cardTrunfo,
       cardRare,
-      button,
+      isSaveButtonDisabled,
       newCard,
       hasTrunfo,
-      filter,
     } = this.state;
-
-  const filterDeck = newCard.filter((card) => {
-    const nameCard = card.cardName.toLocaleLowerCase();
-    const filterName = filter.toLocaleLowerCase();
-    return nameCard.includes(filterName);
-  })
-
 
     return (
       <main>
         <Form
-          isSaveButtonDisabled={button}
+          isSaveButtonDisabled={isSaveButtonDisabled}
           cardName={cardName}
           cardDescription={cardDescription}
           cardImage={cardImage}
@@ -144,8 +148,8 @@ class App extends Component {
           cardRare={cardRare}
           hasTrunfo={hasTrunfo}
           cardTrunfo={cardTrunfo}
-          onInputChange={this.handleChange}
-          onSaveButtonClick={this.handleSave}
+          onInputChange={this.onInputChange}
+          onSaveButtonClick={this.onSaveButtonClick}
         />
         <Card
           cardName={cardName}
@@ -156,10 +160,22 @@ class App extends Component {
           cardAttr3={cardAttr3}
           cardRare={cardRare}
           cardTrunfo={cardTrunfo}
+          hasTrunfo={hasTrunfo}
         />
         <section>
-          {filterDeck.map((card, index) => (
-            <div key={ `${card.cardName}${index}` }>
+          <label htmlFor="name-filter">
+            <input type="text" data-testid="name-filter" onChange={this.filterName} />
+          </label>
+          <label htmlFor="filter-rare">
+            <select data-testid="rare-filter" onChange={this.filterRare}>
+              <option>todas</option>
+              <option>normal</option>
+              <option>raro</option>
+              <option>muito raro</option>
+            </select>
+          </label>
+          {newCard.map((card, index) => (
+            <div key={`${card.cardName}${index}`}>
               <Card
                 cardName={card.cardName}
                 cardDescription={card.cardDescription}
@@ -169,12 +185,14 @@ class App extends Component {
                 cardImage={card.cardImage}
                 cardRare={card.cardRare}
                 cardTrunfo={card.cardTrunfo}
+                hasTrunfo={card.hasTrunfo}
               />
               <button
                 id={card.cardName}
                 type="button"
                 data-testid="delete-button"
                 onClick={this.deleteCard}
+                value={card.cardName}
               >
                 Excluir
               </button>

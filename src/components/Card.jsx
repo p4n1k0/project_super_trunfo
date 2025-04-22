@@ -12,7 +12,8 @@ class Card extends Component {
             cardImage,
             cardRare,
             cardTrunfo,
-         } = this.props;
+            hasTrunfo,
+        } = this.props;
 
         return (
             <section>
@@ -25,7 +26,16 @@ class Card extends Component {
                     <p data-testid="attr3-card">{cardAttr3}</p>
                     <p data-testid="rare-card">{cardRare}</p>
                     <div>
-                        {cardTrunfo && <p data-testid="trunfo-card">Super Trunfo</p>}
+                        {!cardTrunfo ? null
+                            : (
+                                <h3
+                                    data-testid="trunfo-card"
+                                    value={hasTrunfo}
+                                >
+                                    Super Trunfo
+                                </h3>
+                            )
+                        }
                     </div>
                 </div>
             </section>
