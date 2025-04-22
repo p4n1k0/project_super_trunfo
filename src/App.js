@@ -30,6 +30,7 @@ class App extends Component {
     this.deleteCard = this.deleteCard.bind(this);
     this.filterName = this.filterName.bind(this);
     this.filterRare = this.filterRare.bind(this);
+    this.filterTrunfo = this.filterTrunfo.bind(this);
   }
 
 
@@ -41,7 +42,7 @@ class App extends Component {
       const { cardName, cardDescription, cardImage, cardAttr1,
         cardAttr2, cardAttr3, cardRare, newCard } = this.state;
 
-      const verifyTrunfo = newCard.some(({cardTrunfo}) => cardTrunfo === true);
+      const verifyTrunfo = newCard.some(({ cardTrunfo }) => cardTrunfo === true);
       if (verifyTrunfo || target.checked) {
         this.setState({ hasTrunfo: true });
       } else {
@@ -119,6 +120,13 @@ class App extends Component {
     }
   }
 
+  filterTrunfo({ target }) {
+    if (target.checked) filter = true;
+    const { newCard } = this.state;
+    const getTrunfo = newCard.filter(({ cardTrunfo }) => cardTrunfo === true);
+    this.setState({ newCard: getTrunfo });
+  }
+
 
   render() {
     const {
@@ -164,15 +172,32 @@ class App extends Component {
         />
         <section>
           <label htmlFor="name-filter">
-            <input type="text" data-testid="name-filter" onChange={this.filterName} />
+            <input
+              disabled={filter}
+              type="text"
+              data-testid="name-filter"
+              onChange={this.filterName}
+            />
           </label>
           <label htmlFor="filter-rare">
-            <select data-testid="rare-filter" onChange={this.filterRare}>
+            <select
+              disabled={filter}
+              data-testid="rare-filter"
+              onChange={this.filterRare}
+            >
               <option>todas</option>
               <option>normal</option>
               <option>raro</option>
               <option>muito raro</option>
             </select>
+          </label>
+          <label htmlFor="filter-trunfo">
+            <input
+              type="checkbox"
+              data-testid="trunfo-filter"
+              onChange={this.filterTrunfo}
+              id="filter-trunfo-filter"
+            />            
           </label>
           {newCard.map((card, index) => (
             <div key={`${card.cardName}${index}`}>
