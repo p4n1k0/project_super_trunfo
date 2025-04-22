@@ -16,7 +16,7 @@ class Card extends Component {
         } = this.props;
 
         return (
-            <section>
+            <section className="cardContainer">
                 <div>
                     <h2 data-testid="name-card">{cardName}</h2>
                     <img src={cardImage} alt={cardName} data-testid="image-card" />

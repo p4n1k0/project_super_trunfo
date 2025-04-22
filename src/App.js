@@ -144,7 +144,7 @@ class App extends Component {
     } = this.state;
 
     return (
-      <main>
+      <main className="mainContainer">
         <Form
           isSaveButtonDisabled={isSaveButtonDisabled}
           cardName={cardName}
@@ -159,6 +159,7 @@ class App extends Component {
           onInputChange={this.onInputChange}
           onSaveButtonClick={this.onSaveButtonClick}
         />
+        <p>Pré-visualização da carta</p>
         <Card
           cardName={cardName}
           cardDescription={cardDescription}
@@ -170,7 +171,8 @@ class App extends Component {
           cardTrunfo={cardTrunfo}
           hasTrunfo={hasTrunfo}
         />
-        <section>
+        <span className="allCards">
+          Filtros de Busca
           <label htmlFor="name-filter">
             <input
               disabled={filter}
@@ -192,6 +194,7 @@ class App extends Component {
             </select>
           </label>
           <label htmlFor="filter-trunfo">
+            Super Trunfo
             <input
               type="checkbox"
               data-testid="trunfo-filter"
@@ -199,6 +202,7 @@ class App extends Component {
               id="filter-trunfo-filter"
             />            
           </label>
+          Todas as cartas
           {newCard.map((card, index) => (
             <div key={`${card.cardName}${index}`}>
               <Card
@@ -223,7 +227,7 @@ class App extends Component {
               </button>
             </div>
           ))}
-        </section>
+        </span>
       </main>
     );
   }

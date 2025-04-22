@@ -19,9 +19,11 @@ class Form extends Component {
         } = this.props;
 
         return (
-            <div>
+            <div className="formContainer">
                 <form>
+                    Adicionar carta
                     <label htmlFor="cardName">
+                        Nome
                         <input
                             name="cardName"
                             type="text"
@@ -43,6 +45,7 @@ class Form extends Component {
                         </label>
                     </div>
                     <label htmlFor="attr1">
+                        Attr 1
                         <input
                             name="cardAttr1"
                             type="number"
@@ -52,6 +55,7 @@ class Form extends Component {
                         />
                     </label>
                     <label htmlFor="attr2">
+                        Attr 2
                         <input
                             name="cardAttr2"
                             type="number"
@@ -61,6 +65,7 @@ class Form extends Component {
                         />
                     </label>
                     <label htmlFor="attr3">
+                        Attr 3
                         <input
                             name="cardAttr3"
                             type="number"
@@ -70,6 +75,7 @@ class Form extends Component {
                         />
                     </label>
                     <label htmlFor="image">
+                        Imagem
                         <input
                             name="cardImage"
                             type="text"
@@ -79,6 +85,7 @@ class Form extends Component {
                         />
                     </label>
                     <label htmlFor="rarity">
+                        Raridade
                         <select
                             name="cardRare"
                             value={cardRare}
